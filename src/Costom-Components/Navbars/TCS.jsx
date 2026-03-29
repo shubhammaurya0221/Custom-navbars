@@ -171,11 +171,11 @@ const Header = () => {
         <>
             <header ref={headerRef} className="fixed w-full top-0 z-50 bg-[#111] text-white font-sans border-b border-gray-800 transition-all duration-300">
                 <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-                    
+
                     {/* Left: Logo */}
                     <div className="flex items-center space-x-6 h-full z-50">
-                        <a href="/" className="text-2xl font-bold tracking-wider text-blue-500">
-                            TreeBay<span className="text-white">Tech</span>
+                        <a href="/" className="text-2xl font-bold tracking-wider text-green-500">
+                            Treebay Tech
                         </a>
                     </div>
 
@@ -191,12 +191,12 @@ const Header = () => {
                                     }}
                                 >
                                     <span className="text-[15px] font-semibold tracking-wide">{item.title}</span>
-                                    <ChevronDown className={`text-xs ml-1 transition-transform duration-300 ${activeMenu === index ? 'rotate-180 text-blue-400' : ''}`} />
+                                    <ChevronDown className={`text-xs ml-1 transition-transform duration-300 ${activeMenu === index ? 'rotate-180 text-green-500' : ''}`} />
                                 </button>
 
                                 {/* Dropdown Menu Container with top-to-bottom drop animation */}
                                 {activeMenu === index && (
-                                    <div className="absolute top-[80px] left-0 w-full bg-[#1a1a1a] shadow-2xl border-t border-gray-700 overflow-hidden animate-drop-down" style={{ minHeight: '400px' }}>
+                                    <div className="absolute top-[80px] left-0 w-full bg-[#0F172A] shadow-2xl border-t border-gray-700 overflow-hidden animate-drop-down" style={{ minHeight: '400px' }}>
                                         <div className="max-w-7xl mx-auto flex h-full p-10">
 
                                             {/* Column 1: Overview (Reveals First) */}
@@ -282,14 +282,16 @@ const Header = () => {
                 {/* ============================================================== */}
                 {/* MOBILE MENU DRAWER                                             */}
                 {/* ============================================================== */}
+                {/* ============================================================== */}
+                {/* MOBILE MENU DRAWER                                             */}
+                {/* ============================================================== */}
                 <div
-                    className={`lg:hidden fixed inset-0 top-20 bg-[#111] overflow-y-auto transition-transform duration-300 ease-in-out ${
-                        isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
-                    }`}
+                    className={`lg:hidden fixed inset-0 top-20 bg-[#111] overflow-y-auto transition-transform duration-300 ease-in-out ${isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
+                        }`}
                 >
                     <div className="flex flex-col px-6 py-4 space-y-2">
                         {navItems.map((item, index) => (
-                            <div key={item.title} className="border-b border-gray-800 pb-2 pt-2">
+                            <div key={item.title} className="border-b border-gray-800 pb-2 pt-2 overflow-hidden">
                                 <button
                                     className="flex justify-between items-center w-full text-left font-semibold text-lg py-2 focus:outline-none"
                                     onClick={() => {
@@ -301,15 +303,19 @@ const Header = () => {
                                 >
                                     <span>{item.title}</span>
                                     {!item.isSimple && (
-                                        <ChevronDown className={`transition-transform duration-300 ${
-                                            mobileActiveMenu === index ? 'rotate-180 text-blue-400' : 'text-gray-400'
-                                        }`} size={20} />
+                                        <ChevronDown className={`transition-transform duration-300 ${mobileActiveMenu === index ? 'rotate-180 text-blue-400' : 'text-gray-400'
+                                            }`} size={20} />
                                     )}
                                 </button>
 
                                 {mobileActiveMenu === index && !item.isSimple && (
-                                    <div className="mt-2 flex flex-col space-y-2 pl-4 animate-fade-in">
-                                        <div className="mb-4 mt-2 bg-gray-900 p-4 rounded-lg">
+                                    <div className="mt-2 flex flex-col space-y-2 pl-4">
+
+                                        {/* 1. DESCRIPTION BOX (Slides in first) */}
+                                        <div
+                                            className="mb-4 mt-2 bg-gray-900 p-4 rounded-lg animate-slide-left"
+                                            style={{ animationDelay: '0ms' }}
+                                        >
                                             <p className="text-gray-300 text-sm leading-relaxed mb-3">
                                                 {item.overview.description}
                                             </p>
@@ -318,28 +324,34 @@ const Header = () => {
                                             </a>
                                         </div>
 
+                                        {/* 2. CATEGORIES (Slide in one by one) */}
                                         {item.categories.map((cat, catIdx) => (
-                                            <div key={cat.name} className="flex flex-col">
+                                            <div
+                                                key={cat.name}
+                                                className="flex flex-col animate-slide-left"
+                                                style={{ animationDelay: `${(catIdx + 1) * 60}ms` }} /* Staggers each category */
+                                            >
                                                 <button
-                                                    className={`flex justify-between items-center text-left py-3 focus:outline-none transition-colors ${
-                                                        mobileActiveCategory === catIdx ? 'text-blue-400 font-medium' : 'text-gray-300'
-                                                    }`}
+                                                    className={`flex justify-between items-center text-left py-3 focus:outline-none transition-colors ${mobileActiveCategory === catIdx ? 'text-blue-400 font-medium' : 'text-gray-300'
+                                                        }`}
                                                     onClick={() => setMobileActiveCategory(mobileActiveCategory === catIdx ? null : catIdx)}
                                                 >
                                                     <span>{cat.name}</span>
-                                                    <ChevronDown className={`transition-transform duration-300 ${
-                                                        mobileActiveCategory === catIdx ? 'rotate-180' : ''
-                                                    }`} size={18} />
+                                                    <ChevronDown className={`transition-transform duration-300 ${mobileActiveCategory === catIdx ? 'rotate-180' : ''
+                                                        }`} size={18} />
                                                 </button>
 
+                                                {/* Nested Links */}
                                                 {mobileActiveCategory === catIdx && (
                                                     <ul className="flex flex-col space-y-3 pl-4 py-2 border-l border-gray-700 ml-2 mb-2 animate-fade-in">
-                                                        {cat.links.map(link => (
-                                                            <li key={link}>
-                                                                <a href="#" className="text-sm text-gray-400 hover:text-white transition-colors">
+                                                        {cat.links.map((link, linkIdx) => (
+                                                            <div className='animate-slide-left' >
+                                                                <li key={linkIdx} >
+                                                                <a href="#" className="text-sm  text-gray-400 hover:text-white transition-colors">
                                                                     {link}
                                                                 </a>
                                                             </li>
+                                                            </div>
                                                         ))}
                                                     </ul>
                                                 )}

@@ -113,3 +113,21 @@
   opacity: 0;
   animation: fadeSlideRight 0.4s ease-out forwards;
 }
+
+/* tcs navbar mobile */
+/* --- Mobile Menu Right-to-Left Animation --- */
+@keyframes slideRightToLeft {
+  0% { 
+    opacity: 0; 
+    transform: translateX(20px); /* Starts to the right */
+  }
+  100% { 
+    opacity: 1; 
+    transform: translateX(0); /* Glides into place (leftwards) */
+  }
+}
+
+.animate-slide-left {
+  opacity: 0;
+  animation: slideRightToLeft 0.4s ease-out forwards;
+}
