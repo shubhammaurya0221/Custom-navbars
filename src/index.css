@@ -1,8 +1,9 @@
 @import "tailwindcss";
 
+/* workly */
 /* Underline */
 /* Background to match your screenshot */
-.navbar { 
+.navbar {
   padding: 20px 40px;
   gap: 30px;
 }
@@ -11,14 +12,17 @@
 .nav-link {
   color: #ffffff;
   text-decoration: none;
-  position: relative; /* 1. Crucial for keeping the underline contained to the word */
-  padding-bottom: 8px; /* 2. Creates space between the text and the line */
+  position: relative;
+  /* 1. Crucial for keeping the underline contained to the word */
+  padding-bottom: 8px;
+  /* 2. Creates space between the text and the line */
   transition: color 0.3s ease;
 }
 
 /* Change text color on hover */
 .nav-link:hover {
-  color: #17c3b2; /* The teal color from your image */
+  color: #17c3b2;
+  /* The teal color from your image */
 }
 
 /* --- The Magic Underline --- */
@@ -29,19 +33,68 @@
   height: 2px;
   bottom: 0;
   left: 0;
-  background-color: #17c3b2; 
-  
+  background-color: #17c3b2;
+
   /* 3. Start it at 0 width (scaled down to nothing) */
-  transform: scaleX(0); 
-  
+  transform: scaleX(0);
+
   /* 4. Force the animation to start from the left side */
-  transform-origin: bottom left; 
-  
+  transform-origin: bottom left;
+
   /* 5. Smoothly animate the transform property */
-  transition: transform 0.3s ease-out; 
+  transition: transform 0.3s ease-out;
 }
 
 /* Grow the underline to full width when hovering over the link */
 .nav-link:hover::after {
   transform: scaleX(1);
+}
+
+/* TCS */
+
+/* --- Navbar Mega Menu Dropdown Animation --- */
+@keyframes slideDownFade {
+  0% {
+    opacity: 0;
+    transform: translateY(-20px); /* Starts 20px higher */
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0); /* Drops down into place */
+  }
+}
+
+.animate-drop-down {
+  /* cubic-bezier creates a fast-start, smooth-stop easing */
+  animation: slideDownFade 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+  transform-origin: top center;
+}
+
+/* --- Inner Content Animations (Waterfall Effect) --- */
+@keyframes fadeSlideUp {
+  0% { opacity: 0; transform: translateY(10px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeSlideRight {
+  0% { opacity: 0; transform: translateX(-15px); }
+  100% { opacity: 1; transform: translateX(0); }
+}
+
+.animate-column-1 { animation: fadeSlideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; }
+.animate-column-2 { animation: fadeSlideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.1s forwards; opacity: 0; }
+
+.animate-link-reveal {
+  animation: fadeSlideRight 0.4s ease-out forwards;
+  opacity: 0;
+}
+
+/* --- Mobile Menu Sub-items --- */
+@keyframes fadeInMobile {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fadeInMobile 0.3s ease-out forwards;
 }

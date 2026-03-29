@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Search, Globe, ChevronRight, ChevronDown, Menu, X } from 'lucide-react';
 
 const navItems = [
@@ -23,7 +23,7 @@ const navItems = [
                 links: ['TCS ADD™', 'TCS BANCS™', 'TCS BFSI Platforms', 'TCS CHROMA™', 'TCS Customer Intelligence & Insights™', 'ignio™', 'TCS iON™', 'TCS HOBS™', 'TCS Intelligent Urban Exchange™', 'TCS OmniStore™', 'TCS Optumera™', 'TCS Tap™', 'Quartz™ – The Smart Ledgers™', 'TCS TwinX™', 'TCS MasterCraft™ Jile™', 'TCS DigiBOLT™', 'TCS AI WisdomNext™'],
             },
             {
-                name: 'Reaseach and Innovation',
+                name: 'Research and Innovation',
                 links: ['TCS Research', 'TCS Innovation Labs', 'TCS Co-Innovation Network (COIN™)'],
             }
         ],
@@ -149,232 +149,220 @@ const navItems = [
 ];
 
 const Header = () => {
-    // Desktop State
     const [activeMenu, setActiveMenu] = useState(null);
     const [activeCategory, setActiveCategory] = useState(0);
-
-    // Mobile State
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [mobileActiveMenu, setMobileActiveMenu] = useState(null);
     const [mobileActiveCategory, setMobileActiveCategory] = useState(null);
 
+    const headerRef = useRef(null);
+
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (headerRef.current && !headerRef.current.contains(event.target)) {
+                setActiveMenu(null);
+            }
+        };
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, []);
+
     return (
-        <header className="fixed w-full top-0 z-50 bg-[#111] text-white font-sans border-b border-gray-800 transition-all duration-300">
-            <div className="max-w-400 mx-auto px-6 h-20 flex items-center justify-between">
+        <>
+            <header ref={headerRef} className="fixed w-full top-0 z-50 bg-[#111] text-white font-sans border-b border-gray-800 transition-all duration-300">
+                <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+                    
+                    {/* Left: Logo */}
+                    <div className="flex items-center space-x-6 h-full z-50">
+                        <a href="/" className="text-2xl font-bold tracking-wider text-blue-500">
+                            TreeBay<span className="text-white">Tech</span>
+                        </a>
+                    </div>
 
-                {/* Left: Logos (Visible on all screens) */}
-                <div className="flex items-center space-x-6 h-full z-50">
-                    <a href="/" className="text-2xl font-bold tracking-wider text-blue-500">
-                        TreeBay<span className="text-white">Tech</span>
-                    </a>
-                </div>
-
-                {/* ============================================================== */}
-                {/* DESKTOP NAVIGATION (Hidden on mobile)                          */}
-                {/* ============================================================== */}
-                <nav className="hidden lg:flex items-center h-full space-x-1">
-                    {navItems.map((item, index) => (
-                        <div
-                            key={item.title}
-                            className="h-full flex items-center px-4 cursor-pointer hover:bg-gray-800 transition-colors duration-200"
-                            onMouseEnter={() => {
-                                if (!item.isSimple) {
-                                    setActiveMenu(index);
-                                    setActiveCategory(0);
-                                } else {
-                                    setActiveMenu(null);
-                                }
-                            }}
-                            onMouseLeave={() => setActiveMenu(null)}
-                        >
-                            <div className="flex items-center">
-                                <span className="text-[15px] font-semibold tracking-wide">{item.title}</span>
-                                {!item.isSimple && (
-                                    <ChevronDown
-                                        className={`text-xs ml-1 transition-transform duration-300 ${
-                                            activeMenu === index ? 'rotate-180' : 'rotate-0'
-                                        }`}
-                                    />
-                                )}
-                            </div>
-
-                            {/* Desktop Mega Menu */}
-                            {!item.isSimple && (
-                                <div
-                                    className={`absolute top-20 left-0 w-full bg-[#1a1a1a] shadow-2xl border-t border-gray-700 overflow-hidden transition-all duration-300 ease-out transform origin-top ${
-                                        activeMenu === index
-                                            ? 'opacity-100 translate-y-0 visible pointer-events-auto'
-                                            : 'opacity-0 -translate-y-4 invisible pointer-events-none'
-                                    }`}
-                                    style={{ minHeight: '400px' }}
+                    {/* Center: Desktop Navigation */}
+                    <nav className="hidden lg:flex items-center h-full space-x-1">
+                        {navItems.map((item, index) => (
+                            <div key={item.title} className="h-full flex items-center">
+                                <button
+                                    className="h-full flex items-center px-4 cursor-pointer hover:bg-gray-800 transition-colors duration-200 focus:outline-none"
+                                    onClick={() => {
+                                        setActiveMenu(activeMenu === index ? null : index);
+                                        setActiveCategory(0);
+                                    }}
                                 >
-                                    <div className="max-w-400 mx-auto flex h-full p-10">
-                                        <div className="w-1/3 pr-10 border-r border-gray-700">
-                                            <h3 className="text-2xl font-light mb-4">{item.overview.heading}</h3>
-                                            <p className="text-gray-400 leading-relaxed mb-6 text-sm">
-                                                {item.overview.description}
-                                            </p>
-                                            <a href="#" className="inline-block px-6 py-2 border border-white hover:bg-white hover:text-black transition-colors duration-300 text-sm font-medium rounded-full">
-                                                {item.overview.cta}
-                                            </a>
-                                        </div>
+                                    <span className="text-[15px] font-semibold tracking-wide">{item.title}</span>
+                                    <ChevronDown className={`text-xs ml-1 transition-transform duration-300 ${activeMenu === index ? 'rotate-180 text-blue-400' : ''}`} />
+                                </button>
 
-                                        <div className="w-1/4 px-10 border-r border-gray-700">
-                                            <ul className="space-y-4">
-                                                {item.categories.map((cat, catIdx) => (
-                                                    <li
-                                                        key={cat.name}
-                                                        className={`flex justify-between items-center cursor-pointer text-[15px] pb-2 border-b border-gray-800 ${
-                                                            activeCategory === catIdx ? 'text-blue-400 font-semibold' : 'text-gray-300 hover:text-white'
-                                                        }`}
-                                                        onMouseEnter={() => setActiveCategory(catIdx)}
-                                                    >
-                                                        {cat.name}
-                                                        <ChevronRight size={16} className={activeCategory === catIdx ? 'opacity-100' : 'opacity-0'} />
-                                                    </li>
-                                                ))}
-                                            </ul>
-                                        </div>
+                                {/* Dropdown Menu Container with top-to-bottom drop animation */}
+                                {activeMenu === index && (
+                                    <div className="absolute top-[80px] left-0 w-full bg-[#1a1a1a] shadow-2xl border-t border-gray-700 overflow-hidden animate-drop-down" style={{ minHeight: '400px' }}>
+                                        <div className="max-w-7xl mx-auto flex h-full p-10">
 
-                                        <div className="w-5/12 pl-10">
-                                            <ul className="grid grid-cols-2 gap-y-4 gap-x-8">
-                                                {item.categories[activeCategory]?.links.map((link) => (
-                                                    <li key={link}>
-                                                        <a href="#" className="text-gray-400 hover:text-white text-sm transition-colors duration-200">
-                                                            {link}
-                                                        </a>
-                                                    </li>
-                                                ))}
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
-                        </div>
-                    ))}
-                </nav>
+                                            {/* Column 1: Overview (Reveals First) */}
+                                            <div className="w-1/3 pr-10 border-r border-gray-700 animate-column-1">
+                                                <h3 className="text-2xl font-light mb-4">{item.overview.heading}</h3>
+                                                <p className="text-gray-400 leading-relaxed mb-6 text-sm">{item.overview.description}</p>
+                                                <a href="#" className="inline-block px-6 py-2 border border-white hover:bg-white hover:text-black transition-colors duration-300 text-sm font-medium rounded-full">
+                                                    {item.overview.cta}
+                                                </a>
+                                            </div>
 
-                {/* Desktop Actions (Hidden on mobile) */}
-                <div className="hidden lg:flex items-center space-x-6 h-full">
-                    <button className="text-gray-300 hover:text-white transition-colors">
-                        <Search size={20} />
-                    </button>
-                    <button className="flex items-center text-gray-300 hover:text-white transition-colors">
-                        <Globe size={20} className="mr-2" />
-                    </button>
-                    <a href="/contact" className="text-[15px] font-medium text-gray-300 hover:text-white transition-colors">
-                        Contact us
-                    </a>
-                </div>
+                                            {/* Column 2: Categories (Reveals Second) */}
+                                            <div className="w-1/4 px-10 border-r border-gray-700 animate-column-2">
+                                                <ul className="space-y-4">
+                                                    {item.categories.map((cat, catIdx) => (
+                                                        <li
+                                                            key={cat.name}
+                                                            className={`flex justify-between items-center cursor-pointer text-[15px] pb-2 border-b border-gray-800 transition-colors ${activeCategory === catIdx ? 'text-blue-400 font-semibold' : 'text-gray-300 hover:text-white'}`}
+                                                            onMouseEnter={() => setActiveCategory(catIdx)}
+                                                        >
+                                                            {cat.name}
+                                                            <ChevronRight size={16} className={`transition-opacity ${activeCategory === catIdx ? 'opacity-100' : 'opacity-0'}`} />
+                                                        </li>
+                                                    ))}
+                                                </ul>
+                                            </div>
 
-                {/* ============================================================== */}
-                {/* MOBILE CONTROLS (Hidden on desktop)                            */}
-                {/* ============================================================== */}
-                <div className="lg:hidden flex items-center space-x-5 z-50">
-                    <button className="text-gray-300 hover:text-white transition-colors">
-                        <Search size={22} />
-                    </button>
-                    <button 
-                        onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                        className="text-gray-300 hover:text-white transition-colors focus:outline-none"
-                    >
-                        {isMobileMenuOpen ? <X size={26} /> : <Menu size={26} />}
-                    </button>
-                </div>
-
-            </div>
-
-            {/* ============================================================== */}
-            {/* MOBILE MENU DRAWER                                             */}
-            {/* ============================================================== */}
-            <div 
-                className={`lg:hidden fixed inset-0 top-20 bg-[#111] overflow-y-auto transition-transform duration-300 ease-in-out ${
-                    isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
-                }`}
-            >
-                <div className="flex flex-col px-6 py-4 space-y-2">
-                    {navItems.map((item, index) => (
-                        <div key={item.title} className="border-b border-gray-800 pb-2 pt-2">
-                            {/* Level 1: Main Menu Items */}
-                            <button
-                                className="flex justify-between items-center w-full text-left font-semibold text-lg py-2 focus:outline-none"
-                                onClick={() => {
-                                    if (!item.isSimple) {
-                                        setMobileActiveMenu(mobileActiveMenu === index ? null : index);
-                                        setMobileActiveCategory(null); // Close inner categories when closing parent
-                                    }
-                                }}
-                            >
-                                <span>{item.title}</span>
-                                {!item.isSimple && (
-                                    <ChevronDown className={`transition-transform duration-300 ${
-                                        mobileActiveMenu === index ? 'rotate-180 text-blue-400' : 'text-gray-400'
-                                    }`} size={20} />
-                                )}
-                            </button>
-
-                            {/* Level 2: Mobile Categories Accordion */}
-                            {mobileActiveMenu === index && !item.isSimple && (
-                                <div className="mt-2 flex flex-col space-y-2 pl-4">
-                                    
-                                    {/* Mobile Overview Banner */}
-                                    <div className="mb-4 mt-2 bg-gray-900 p-4 rounded-lg">
-                                        <p className="text-gray-300 text-sm leading-relaxed mb-3">
-                                            {item.overview.description}
-                                        </p>
-                                        <a href="#" className="text-blue-400 text-sm font-medium flex items-center">
-                                            {item.overview.cta} <ChevronRight size={16} className="ml-1" />
-                                        </a>
-                                    </div>
-
-                                    {/* Sub-categories */}
-                                    {item.categories.map((cat, catIdx) => (
-                                        <div key={cat.name} className="flex flex-col">
-                                            <button
-                                                className={`flex justify-between items-center text-left py-3 focus:outline-none ${
-                                                    mobileActiveCategory === catIdx ? 'text-blue-400 font-medium' : 'text-gray-300'
-                                                }`}
-                                                onClick={() => setMobileActiveCategory(mobileActiveCategory === catIdx ? null : catIdx)}
-                                            >
-                                                <span>{cat.name}</span>
-                                                <ChevronDown className={`transition-transform duration-300 ${
-                                                    mobileActiveCategory === catIdx ? 'rotate-180' : ''
-                                                }`} size={18} />
-                                            </button>
-
-                                            {/* Level 3: Final Links */}
-                                            {mobileActiveCategory === catIdx && (
-                                                <ul className="flex flex-col space-y-3 pl-4 py-2 border-l border-gray-700 ml-2 mb-2">
-                                                    {cat.links.map(link => (
-                                                        <li key={link}>
-                                                            <a href="#" className="text-sm text-gray-400 hover:text-white transition-colors">
+                                            {/* Column 3: Links (Reveals last with staggered waterfall) */}
+                                            <div className="w-5/12 pl-10">
+                                                <ul key={activeCategory} className="grid grid-cols-2 gap-y-4 gap-x-8">
+                                                    {item.categories[activeCategory]?.links.map((link, idx) => (
+                                                        <li
+                                                            key={link}
+                                                            className="animate-link-reveal"
+                                                            style={{ animationDelay: `${200 + (idx * 30)}ms` }}
+                                                        >
+                                                            <a href="#" className="text-gray-400 hover:text-white text-sm transition-colors duration-200">
                                                                 {link}
                                                             </a>
                                                         </li>
                                                     ))}
                                                 </ul>
-                                            )}
+                                            </div>
+
                                         </div>
-                                    ))}
-                                </div>
-                            )}
+                                    </div>
+                                )}
+                            </div>
+                        ))}
+                    </nav>
+
+                    {/* Right: Desktop Actions & Mobile Menu Toggle */}
+                    <div className="flex items-center space-x-5 z-50">
+                        {/* Desktop Only Actions */}
+                        <div className="hidden lg:flex items-center space-x-6 h-full">
+                            <button className="text-gray-300 hover:text-white transition-colors">
+                                <Search size={20} />
+                            </button>
+                            <button className="flex items-center text-gray-300 hover:text-white transition-colors">
+                                <Globe size={20} className="mr-2" />
+                            </button>
+                            <a href="/contact" className="text-[15px] font-medium text-gray-300 hover:text-white transition-colors">
+                                Contact us
+                            </a>
                         </div>
-                    ))}
-                    
-                    {/* Mobile Bottom Links (Globe & Contact) */}
-                    <div className="pt-6 pb-10 space-y-6">
-                        <button className="flex items-center text-gray-300 hover:text-white transition-colors w-full text-left font-semibold text-lg">
-                            <Globe size={22} className="mr-3" />
-                            Global (En)
-                        </button>
-                        <a href="/contact" className="block text-gray-300 hover:text-white transition-colors w-full text-left font-semibold text-lg">
-                            Contact Us
-                        </a>
+
+                        {/* Mobile Controls */}
+                        <div className="lg:hidden flex items-center space-x-5">
+                            <button className="text-gray-300 hover:text-white transition-colors">
+                                <Search size={22} />
+                            </button>
+                            <button
+                                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                                className="text-gray-300 hover:text-white transition-colors focus:outline-none"
+                            >
+                                {isMobileMenuOpen ? <X size={26} /> : <Menu size={26} />}
+                            </button>
+                        </div>
                     </div>
 
                 </div>
-            </div>
-        </header>
+
+                {/* ============================================================== */}
+                {/* MOBILE MENU DRAWER                                             */}
+                {/* ============================================================== */}
+                <div
+                    className={`lg:hidden fixed inset-0 top-20 bg-[#111] overflow-y-auto transition-transform duration-300 ease-in-out ${
+                        isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
+                    }`}
+                >
+                    <div className="flex flex-col px-6 py-4 space-y-2">
+                        {navItems.map((item, index) => (
+                            <div key={item.title} className="border-b border-gray-800 pb-2 pt-2">
+                                <button
+                                    className="flex justify-between items-center w-full text-left font-semibold text-lg py-2 focus:outline-none"
+                                    onClick={() => {
+                                        if (!item.isSimple) {
+                                            setMobileActiveMenu(mobileActiveMenu === index ? null : index);
+                                            setMobileActiveCategory(null);
+                                        }
+                                    }}
+                                >
+                                    <span>{item.title}</span>
+                                    {!item.isSimple && (
+                                        <ChevronDown className={`transition-transform duration-300 ${
+                                            mobileActiveMenu === index ? 'rotate-180 text-blue-400' : 'text-gray-400'
+                                        }`} size={20} />
+                                    )}
+                                </button>
+
+                                {mobileActiveMenu === index && !item.isSimple && (
+                                    <div className="mt-2 flex flex-col space-y-2 pl-4 animate-fade-in">
+                                        <div className="mb-4 mt-2 bg-gray-900 p-4 rounded-lg">
+                                            <p className="text-gray-300 text-sm leading-relaxed mb-3">
+                                                {item.overview.description}
+                                            </p>
+                                            <a href="#" className="text-blue-400 text-sm font-medium flex items-center hover:text-blue-300 transition-colors">
+                                                {item.overview.cta} <ChevronRight size={16} className="ml-1" />
+                                            </a>
+                                        </div>
+
+                                        {item.categories.map((cat, catIdx) => (
+                                            <div key={cat.name} className="flex flex-col">
+                                                <button
+                                                    className={`flex justify-between items-center text-left py-3 focus:outline-none transition-colors ${
+                                                        mobileActiveCategory === catIdx ? 'text-blue-400 font-medium' : 'text-gray-300'
+                                                    }`}
+                                                    onClick={() => setMobileActiveCategory(mobileActiveCategory === catIdx ? null : catIdx)}
+                                                >
+                                                    <span>{cat.name}</span>
+                                                    <ChevronDown className={`transition-transform duration-300 ${
+                                                        mobileActiveCategory === catIdx ? 'rotate-180' : ''
+                                                    }`} size={18} />
+                                                </button>
+
+                                                {mobileActiveCategory === catIdx && (
+                                                    <ul className="flex flex-col space-y-3 pl-4 py-2 border-l border-gray-700 ml-2 mb-2 animate-fade-in">
+                                                        {cat.links.map(link => (
+                                                            <li key={link}>
+                                                                <a href="#" className="text-sm text-gray-400 hover:text-white transition-colors">
+                                                                    {link}
+                                                                </a>
+                                                            </li>
+                                                        ))}
+                                                    </ul>
+                                                )}
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+                        ))}
+
+                        <div className="pt-6 pb-10 space-y-6">
+                            <button className="flex items-center text-gray-300 hover:text-white transition-colors w-full text-left font-semibold text-lg">
+                                <Globe size={22} className="mr-3" />
+                                Global (En)
+                            </button>
+                            <a href="/contact" className="block text-gray-300 hover:text-white transition-colors w-full text-left font-semibold text-lg">
+                                Contact Us
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </header>
+        </>
     );
 };
 
