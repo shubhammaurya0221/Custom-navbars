@@ -196,7 +196,7 @@ const Header = () => {
 
                                 {/* Dropdown Menu Container with top-to-bottom drop animation */}
                                 {activeMenu === index && (
-                                    <div className="absolute top-[80px] left-0 w-full bg-[#0F172A] shadow-2xl border-t border-gray-700 overflow-hidden animate-drop-down" style={{ minHeight: '400px' }}>
+                                    <div className="absolute top-[80px] left-0 w-full bg-[#111] shadow-2xl border-t border-gray-700 overflow-hidden animate-drop-down" style={{ minHeight: '400px' }}>
                                         <div className="max-w-7xl mx-auto flex h-full p-10">
 
                                             {/* Column 1: Overview (Reveals First) */}
